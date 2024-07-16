@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Music Stream</string>
+    <string name="bienvenido">Bienvenido</string>
+    <string name="categoria">Categorías</string>
+    <string name="song_name">Song name</string>
+    <string name="song_subtitle">Song subtitle</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="trending">Tendencias</string>
+
+</resources>
