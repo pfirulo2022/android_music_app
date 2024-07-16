@@ -45,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/player_view"
         android:layout_marginTop="16dp">
 
         <LinearLayout
@@ -168,4 +169,32 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp"
+        android:background="@color/black"
+        android:id="@+id/player_view"
+        >
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/song_cover_image_view"
+            tools:ignore="ContentDescription" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/now_playing"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:paddingStart="16dp"
+            android:layout_toEndOf="@+id/song_cover_image_view"
+            android:id="@+id/song_title_text_view"
+            tools:ignore="RtlSymmetry" />
+
+
+    </RelativeLayout>
+
 </RelativeLayout>

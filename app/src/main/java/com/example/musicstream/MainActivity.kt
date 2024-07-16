@@ -2,16 +2,22 @@ package com.example.musicstream
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.RoundedCorner
+import android.view.View
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.example.musicstream.adapter.CategoryAdapter
 import com.example.musicstream.adapter.SectionSongListAdapter
 import com.example.musicstream.databinding.ActivityMainBinding
 import com.example.musicstream.models.CategoryModel
 import com.google.firebase.firestore.FirebaseFirestore
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,8 +30,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         getCategories()
-        setupSection()
+        // no modifiqué secion_1 por section_1, perdón mal yo :)
+        setupSection("secion_1",binding.section1MainLayout,binding.section1Title,binding.section1RecyclerView)
+        setupSection("section_2",binding.section2MainLayout,binding.section2Title,binding.section2RecyclerView)
+        setupSection("section_3",binding.section3MainLayout,binding.section3Title,binding.section3RecyclerView)
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        showPlayerView()
+    }
+
+    fun showPlayerView(){
+        binding.playerView.setOnClickListener{
+            startActivity(Intent(this, PlayerActivity::class.java))
+        }
+        MyExoplayer.getCurrentSong()?.let {
+            binding.playerView.visibility = View.VISIBLE
+            binding.songTitleTextView.text = "Sonando: " + it.title
+            Glide.with(binding.songCoverImageView).load(it.cover)
+                .apply(
+                    RequestOptions().transform(RoundedCorners(32))
+                ).into(binding.songCoverImageView)
+        } ?: run {
+            binding.playerView.visibility = View.GONE
+        }
     }
 
     // Categories
@@ -46,19 +76,20 @@ class MainActivity : AppCompatActivity() {
 
     //Sections
 
-    fun setupSection() {
+    fun setupSection(id: String, mainLayout: RelativeLayout,titleView: TextView, recyclerView: RecyclerView) {
         FirebaseFirestore.getInstance().collection("sections")
-            .document("secion_1")
+            .document(id)
             .get().addOnSuccessListener {
                 val section = it.toObject(CategoryModel::class.java)
                 section?.apply {
-                    binding.section1Title.text = name
-                    binding.section1RecyclerView.layoutManager = LinearLayoutManager(
+                    mainLayout.visibility = View.VISIBLE
+                    titleView.text = name
+                    recyclerView.layoutManager = LinearLayoutManager(
                         this@MainActivity,
                         LinearLayoutManager.HORIZONTAL, false
                     )
-                    binding.section1RecyclerView.adapter = SectionSongListAdapter(songs)
-                    binding.section1MainLayout.setOnClickListener{
+                    recyclerView.adapter = SectionSongListAdapter(songs)
+                    mainLayout.setOnClickListener{
                         SongListActivity.category = section
                         startActivity(Intent(this@MainActivity,SongListActivity::class.java))
                     }
